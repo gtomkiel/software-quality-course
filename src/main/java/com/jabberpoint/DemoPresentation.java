@@ -1,3 +1,5 @@
+package com.jabberpoint;
+
 /** A built in demo-presentation
  * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
  * @version 1.1 2002/12/17 Gert Florijn
@@ -44,7 +46,7 @@ class DemoPresentation extends Accessor {
 		slide.append(2, "use File->Open from the menu.");
 		slide.append(1, " ");
 		slide.append(1, "This is the end of the presentation.");
-		slide.append(new BitmapItem(1, "JabberPoint.jpg"));
+		slide.append(new BitmapItem(1, "JabberPoint.gif"));
 		presentation.append(slide);
 	}
 

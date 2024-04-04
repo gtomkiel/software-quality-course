@@ -1,7 +1,6 @@
 package com.jabberpoint.controller;
 
 import com.jabberpoint.Presentation;
-import com.jabberpoint.accessor.Accessor;
 import com.jabberpoint.accessor.XMLAccessor;
 
 import javax.swing.*;
@@ -9,8 +8,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.Serial;
 
-import static com.jabberpoint.Constants.*;
+import static com.jabberpoint.Constants.Error.*;
+import static com.jabberpoint.Constants.Menu.*;
+import static com.jabberpoint.Constants.SAVE_FILE;
+import static com.jabberpoint.Constants.TEST_FILE;
 
 /** <p>The controller for the menu</p>
  * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
@@ -23,14 +26,14 @@ import static com.jabberpoint.Constants.*;
  */
 
 public class MenuController extends MenuBar {
+    @Serial
+    private static final long serialVersionUID = 227L;
     private final Frame parent;
     private final Presentation presentation;
 
-    private static final long serialVersionUID = 227L;
-
-    public MenuController(Frame frame, Presentation pres) {
-        parent = frame;
-        presentation = pres;
+    public MenuController(Frame frame, Presentation presentation) {
+        this.parent = frame;
+        this.presentation = presentation;
 
         add(createFileMenu());
         add(createViewMenu());
@@ -44,6 +47,7 @@ public class MenuController extends MenuBar {
         fileMenu.add(createMenuItem(SAVE, this::saveFile));
         fileMenu.addSeparator();
         fileMenu.add(createMenuItem(EXIT, _ -> presentation.exit(0)));
+
         return fileMenu;
     }
 
@@ -52,29 +56,33 @@ public class MenuController extends MenuBar {
         viewMenu.add(createMenuItem(NEXT, _ -> presentation.nextSlide()));
         viewMenu.add(createMenuItem(PREV, _ -> presentation.prevSlide()));
         viewMenu.add(createMenuItem(GOTO, this::gotoPage));
+
         return viewMenu;
     }
 
     private Menu createHelpMenu() {
         Menu helpMenu = new Menu(HELP);
         helpMenu.add(createMenuItem(ABOUT, _ -> AboutBox.show(parent)));
+
         return helpMenu;
     }
 
     private MenuItem createMenuItem(String name, ActionListener actionListener) {
         MenuItem menuItem = new MenuItem(name, new MenuShortcut(name.charAt(0)));
         menuItem.addActionListener(actionListener);
+
         return menuItem;
     }
 
     private void openFile(ActionEvent e) {
         presentation.clear();
-        Accessor xmlAccessor = new XMLAccessor();
+
         try {
-            xmlAccessor.loadFile(presentation, TEST_FILE);
+            presentation.load(new XMLAccessor(), TEST_FILE);
         } catch (IOException exc) {
             JOptionPane.showMessageDialog(parent, IO_EX + exc, LOAD_ERR, JOptionPane.ERROR_MESSAGE);
         }
+
         parent.repaint();
     }
 
@@ -84,9 +92,8 @@ public class MenuController extends MenuBar {
     }
 
     private void saveFile(ActionEvent e) {
-        Accessor xmlAccessor = new XMLAccessor();
         try {
-            xmlAccessor.saveFile(presentation, SAVE_FILE);
+            presentation.save(new XMLAccessor(), SAVE_FILE);
         } catch (IOException exc) {
             JOptionPane.showMessageDialog(parent, IO_EX + exc, SAVE_ERR, JOptionPane.ERROR_MESSAGE);
         }

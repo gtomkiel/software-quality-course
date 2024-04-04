@@ -2,8 +2,7 @@ package com.jabberpoint.slideitem;
 
 import com.jabberpoint.Style;
 
-import java.awt.Rectangle;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.ImageObserver;
 
 /** <p>The abstract class for an item on a slide<p>
@@ -18,9 +17,27 @@ import java.awt.image.ImageObserver;
  */
 
 public interface SlideItem {
+    /** Draw the item
+     * @param x The x-coordinate of the item
+     * @param y The y-coordinate of the item
+     * @param scale The scale of the item
+     * @param graphics The graphics object to draw on
+     * @param style The style of the item
+     * @param observer The observer to notify when the image is ready
+     */
+    void draw(int x, int y, float scale, Graphics2D graphics, Style style, ImageObserver observer);
+
+    /** Get the bounding box of the item
+     * @param graphics The graphics object to draw on
+     * @param observer The observer to notify when the image is ready
+     * @param scale The scale of the item
+     * @param style The style of the item
+     * @return The bounding box of the item
+     */
+    Rectangle getBoundingBox(Graphics2D graphics, ImageObserver observer, float scale, Style style);
+
+    /** Get the level of the item
+     * @return The level of the item
+     */
     int getLevel();
-
-    Rectangle getBoundingBox(Graphics g, ImageObserver observer, float scale, Style style);
-
-    void draw(int x, int y, float scale, Graphics g, Style style, ImageObserver observer);
 }

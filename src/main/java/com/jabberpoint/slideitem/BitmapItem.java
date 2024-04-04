@@ -9,8 +9,8 @@ import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 
-import static com.jabberpoint.Constants.NOT_FOUND;
-import static com.jabberpoint.Constants.FILE_ERROR;
+import static com.jabberpoint.Constants.Error.FILE_ERROR;
+import static com.jabberpoint.Constants.Error.NOT_FOUND;
 
 /** <p>The class for a Bitmap item</p>.
  * <p>Bitmap items have the responsibility to draw themselves.</p>
@@ -24,9 +24,9 @@ import static com.jabberpoint.Constants.FILE_ERROR;
  */
 
 public class BitmapItem implements SlideItem {
-    private BufferedImage bufferedImage;
     private final String imageName;
     private final int level;
+    private BufferedImage bufferedImage;
 
     public BitmapItem(int level, String name) {
         this.level = level;
@@ -44,22 +44,29 @@ public class BitmapItem implements SlideItem {
     }
 
     @Override
-    public int getLevel() {
-        return this.level;
+    public String toString() {
+        return String.format("BitmapItem[%d %s]", getLevel(), imageName);
     }
 
-    public Rectangle getBoundingBox(Graphics g, ImageObserver observer, float scale, Style style) {
+    @Override
+    public void draw(int x, int y, float scale, Graphics2D graphics, Style style, ImageObserver observer) {
+        int scaledIndent = getScaledIndent(scale, style);
+        int scaledWidth = getScaledWidth(observer, scale);
+        int scaledHeight = getScaledHeight(observer, scale, style);
+        graphics.drawImage(bufferedImage, x + scaledIndent, y + scaledIndent, scaledWidth, scaledHeight, observer);
+    }
+
+    @Override
+    public Rectangle getBoundingBox(Graphics2D graphics, ImageObserver observer, float scale, Style style) {
         int scaledIndent = getScaledIndent(scale, style);
         int scaledWidth = getScaledWidth(observer, scale);
         int scaledHeight = getScaledHeight(observer, scale, style);
         return new Rectangle(scaledIndent, 0, scaledWidth, scaledHeight);
     }
 
-    public void draw(int x, int y, float scale, Graphics g, Style myStyle, ImageObserver observer) {
-        int scaledIndent = getScaledIndent(scale, myStyle);
-        int scaledWidth = getScaledWidth(observer, scale);
-        int scaledHeight = getScaledHeight(observer, scale, myStyle);
-        g.drawImage(bufferedImage, x + scaledIndent, y + scaledIndent, scaledWidth, scaledHeight, observer);
+    @Override
+    public int getLevel() {
+        return this.level;
     }
 
     private int getScaledIndent(float scale, Style style) {
@@ -72,9 +79,5 @@ public class BitmapItem implements SlideItem {
 
     private int getScaledHeight(ImageObserver observer, float scale, Style style) {
         return ((int) (style.getLeading() * scale)) + (int) (bufferedImage.getHeight(observer) * scale);
-    }
-
-    public String toString() {
-        return String.format("BitmapItem[%d %s]", getLevel(), imageName);
     }
 }

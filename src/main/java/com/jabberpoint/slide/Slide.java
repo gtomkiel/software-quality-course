@@ -3,6 +3,7 @@ package com.jabberpoint.slide;
 import com.jabberpoint.Style;
 import com.jabberpoint.slideitem.SlideItem;
 import com.jabberpoint.slideitem.SlideItemFactory;
+import com.jabberpoint.slideitem.SlideItemType;
 
 import java.awt.*;
 import java.awt.image.ImageObserver;
@@ -21,15 +22,35 @@ import java.util.ArrayList;
 public class Slide {
     public final static int WIDTH = 1200;
     public final static int HEIGHT = 800;
-    private String title;
     private final ArrayList<SlideItem> items;
+    private String title;
 
     public Slide() {
         this.items = new ArrayList<>();
     }
 
-    public void append(SlideItem item) {
+    public void append(int level, String message, SlideItemType type) {
+        append(SlideItemFactory.createSlideItem(level, message, type));
+    }
+
+    private void append(SlideItem item) {
         this.items.add(item);
+    }
+
+    public void draw(Graphics2D graphics, Rectangle area, ImageObserver view) {
+        float scale = getScale(area);
+        int y = area.y;
+
+        SlideItem title = SlideItemFactory.createSlideItem(0, getTitle(), SlideItemType.TEXT);
+        y = drawSlideItem(title, area.x, y, scale, graphics, view);
+
+        for (SlideItem item : getSlideItems()) {
+            y = drawSlideItem(item, area.x, y, scale, graphics, view);
+        }
+    }
+
+    private float getScale(Rectangle area) {
+        return Math.min((float) area.width / WIDTH, (float) area.height / HEIGHT);
     }
 
     public String getTitle() {
@@ -40,42 +61,13 @@ public class Slide {
         title = newTitle;
     }
 
-    public void append(int level, String message) {
-        append(SlideItemFactory.createSlideItem(level, message, "text"));
+    private int drawSlideItem(SlideItem slideItem, int x, int y, float scale, Graphics2D graphics, ImageObserver view) {
+        Style style = Style.getStyle(slideItem.getLevel());
+        slideItem.draw(x, y, scale, graphics, style, view);
+        return y + slideItem.getBoundingBox(graphics, view, scale, style).height;
     }
 
     public ArrayList<SlideItem> getSlideItems() {
         return this.items;
-    }
-
-    public int getSize() {
-        return this.items.size();
-    }
-
-    public void draw(Graphics g, Rectangle area, ImageObserver view) {
-        float scale = getScale(area);
-        int y = area.y;
-
-        SlideItem title = SlideItemFactory.createSlideItem(0, getTitle(), "text");
-        y = drawSlideItem(title, area.x, y, scale, g, view);
-
-        for (SlideItem item : getSlideItems()) {
-            y = drawSlideItem(item, area.x, y, scale, g, view);
-        }
-    }
-
-    private int drawSlideItem(SlideItem slideItem, int x, int y, float scale, Graphics g, ImageObserver view) {
-        Style style = Style.getStyle(slideItem.getLevel());
-        slideItem.draw(x, y, scale, g, style, view);
-        return y + slideItem.getBoundingBox(g, view, scale, style).height;
-    }
-
-    private float getScale(Rectangle area) {
-        float scale = Math.min((float) area.width / WIDTH, (float) area.height / HEIGHT);
-        // at smaller scales, the application becomes unusable
-        if (scale <= 0.5f) {
-            scale = 0.5f;
-        }
-        return scale;
     }
 }

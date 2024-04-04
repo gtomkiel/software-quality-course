@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Serial;
 
 import static com.jabberpoint.Constants.JAB_VERSION;
 
@@ -23,29 +24,26 @@ import static com.jabberpoint.Constants.JAB_VERSION;
  */
 
 public class SlideViewerFrame extends JFrame {
+    @Serial
     private static final long serialVersionUID = 3227L;
+    private final Dimension dimension;
 
-    public final static int WIDTH = 1200;
-    public final static int HEIGHT = 800;
-
-    public SlideViewerFrame(String title, Presentation presentation) {
+    public SlideViewerFrame(String title, Dimension dimension) {
         super(title);
-        SlideViewerComponent slideViewerComponent = new SlideViewerComponent(presentation, this);
-        presentation.subscribe(slideViewerComponent);
-        setupWindow(slideViewerComponent, presentation);
+        this.dimension = dimension;
     }
 
     public void setupWindow(SlideViewerComponent slideViewerComponent, Presentation presentation) {
         setTitle(JAB_VERSION);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                System.exit(0);
+                presentation.exit(0);
             }
         });
         getContentPane().add(slideViewerComponent);
         addKeyListener(new KeyController(presentation));
         setMenuBar(new MenuController(this, presentation));
-        setSize(new Dimension(WIDTH, HEIGHT));
+        setSize(dimension);
         setVisible(true);
     }
 }

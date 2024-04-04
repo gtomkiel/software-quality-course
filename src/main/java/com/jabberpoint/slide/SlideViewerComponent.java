@@ -1,9 +1,8 @@
 package com.jabberpoint.slide;
 
-import com.jabberpoint.Presentation;
-
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serial;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
@@ -18,43 +17,47 @@ import java.util.concurrent.Flow.Subscription;
  */
 
 public class SlideViewerComponent extends JComponent implements Subscriber<IndexedSlide> {
-    private IndexedSlide slide;
-    private final Font labelFont;
-    private Presentation presentation;
-    private final JFrame frame;
-    private Subscription subscription;
-
+    @Serial
     private static final long serialVersionUID = 227L;
-
     private static final Color BGCOLOR = Color.white;
     private static final Color COLOR = Color.black;
-    private static final String FONT_NAME = "Dialog";
-    private static final int FONT_STYLE = Font.BOLD;
-    private static final int FONT_HEIGHT = 10;
-    private static final int Y_OFFSET = 20;
+    private final Font labelFont = new Font("Dialog", Font.BOLD, 10);
+    private final int Y_OFFSET = 20;
+    private final JFrame frame;
+    private IndexedSlide slide;
+    private Subscription subscription;
+    private int numberOfSlides;
 
-    public SlideViewerComponent(Presentation presentation, JFrame frame) {
+    public SlideViewerComponent(JFrame frame) {
         setBackground(BGCOLOR);
-        this.presentation = presentation;
-        labelFont = new Font(FONT_NAME, FONT_STYLE, FONT_HEIGHT);
         this.frame = frame;
     }
 
-    public Dimension getPreferredSize() {
-        return new Dimension(Slide.WIDTH, Slide.HEIGHT);
+    public void setTitle(String title) {
+        frame.setTitle(title);
+    }
+
+    public void setNumberOfSlides(int numberOfSlides) {
+        this.numberOfSlides = numberOfSlides;
     }
 
     public void updateSlideNumber(int slideNumber) {
-        subscription.request(slideNumber);
+        if (this.subscription != null) {
+            this.subscription.request(slideNumber);
+        }
     }
 
     public void paintComponent(Graphics graphics) {
         initGraphics(graphics);
 
         if (this.slide != null && this.slide.index() >= 0) {
-            drawSlideNumber(graphics);
+            drawSlideNumber((Graphics2D) graphics);
             drawSlide(graphics);
         }
+    }
+
+    public Dimension getPreferredSize() {
+        return new Dimension(Slide.WIDTH, Slide.HEIGHT);
     }
 
     private void initGraphics(Graphics graphics) {
@@ -64,14 +67,19 @@ public class SlideViewerComponent extends JComponent implements Subscriber<Index
         graphics.setColor(COLOR);
     }
 
-    private void drawSlideNumber(Graphics graphics) {
-        String slideNumberText = String.format("Slide %d of %d", 1 + this.slide.index(), presentation.getSize());
-        graphics.drawString(slideNumberText, getWidth() - 100, Y_OFFSET);
+    private void drawSlideNumber(Graphics2D graphics) {
+        String slideNumberText = String.format("Slide %d of %d", 1 + this.slide.index(), this.numberOfSlides);
+
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        FontMetrics metrics = graphics.getFontMetrics();
+        int textWidth = metrics.stringWidth(slideNumberText) + 20;
+
+        graphics.drawString(slideNumberText, getWidth() - textWidth, Y_OFFSET);
     }
 
     private void drawSlide(Graphics graphics) {
         Rectangle area = new Rectangle(0, Y_OFFSET, getWidth(), (getHeight() - Y_OFFSET));
-        slide.slide().draw(graphics, area, this);
+        slide.slide().draw((Graphics2D) graphics, area, this);
     }
 
     @Override
@@ -83,7 +91,6 @@ public class SlideViewerComponent extends JComponent implements Subscriber<Index
     public void onNext(IndexedSlide slide) {
         this.slide = slide;
         repaint();
-        frame.setTitle(this.presentation.getTitle());
     }
 
     @Override

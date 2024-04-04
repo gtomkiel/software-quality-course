@@ -2,6 +2,7 @@ package com.jabberpoint;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.ArrayList;
 
 /** <p>Style is for Indent, Color, Font and Leading.</p>
  * <p>Direct relation between style-number and item-level:
@@ -17,35 +18,32 @@ import java.awt.Font;
  */
 
 public class Style {
-    private static Style[] styles;
-
     private static final String FONT_NAME = "Helvetica";
+    private static final ArrayList<Style> styles = new ArrayList<>();
     private final int indent, fontSize, leading;
     private final Color color;
     private final Font font;
-
-    public static void createStyles() {
-        styles = new Style[5];
-        // The styles are fixed.
-        styles[0] = new Style(0, Color.red, 48, 20);    // style for item-level 0
-        styles[1] = new Style(20, Color.blue, 40, 10);  // style for item-level 1
-        styles[2] = new Style(50, Color.black, 36, 10); // style for item-level 2
-        styles[3] = new Style(70, Color.black, 30, 10); // style for item-level 3
-        styles[4] = new Style(90, Color.black, 24, 10); // style for item-level 4
-    }
-
-    public static Style getStyle(int level) {
-        if (level >= styles.length) {
-            level = styles.length - 1;
-        }
-        return styles[level];
-    }
 
     public Style(int indent, Color color, int points, int leading) {
         this.indent = indent;
         this.color = color;
         font = new Font(FONT_NAME, Font.BOLD, fontSize = points);
         this.leading = leading;
+    }
+
+    public static void createStyles() {
+        styles.add(new Style(0, Color.red, 48, 20));    // style for item-level 0
+        styles.add(new Style(20, Color.blue, 40, 10));  // style for item-level 1
+        styles.add(new Style(50, Color.black, 36, 10)); // style for item-level 2
+        styles.add(new Style(70, Color.black, 30, 10)); // style for item-level 3
+        styles.add(new Style(90, Color.black, 24, 10)); // style for item-level 4
+    }
+
+    public static Style getStyle(int level) {
+        if (level >= styles.size()) {
+            level = styles.size() - 1;
+        }
+        return styles.get(level);
     }
 
     public String toString() {
@@ -55,11 +53,11 @@ public class Style {
     public Font getFont(float scale) {
         return font.deriveFont(fontSize * scale);
     }
-    
+
     public int getIndent() {
         return indent;
     }
-    
+
     public Color getColor() {
         return color;
     }

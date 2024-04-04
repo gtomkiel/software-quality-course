@@ -2,7 +2,9 @@ package com.jabberpoint.accessor;
 
 import com.jabberpoint.Presentation;
 import com.jabberpoint.slide.Slide;
-import com.jabberpoint.slideitem.BitmapItem;
+
+import static com.jabberpoint.slideitem.SlideItemType.IMAGE;
+import static com.jabberpoint.slideitem.SlideItemType.TEXT;
 
 /** A built-in demo-presentation
  * @author Ian F. Darwin, ian@darwinsys.com, Gert Florijn, Sylvia Stuurman
@@ -15,50 +17,51 @@ import com.jabberpoint.slideitem.BitmapItem;
  */
 
 public class DemoPresentation implements Accessor {
-    public void loadFile(Presentation presentation, String unusedFilename) {
-        presentation.setTitle("Demo Presentation");
+    public String loadFile(Presentation presentation, String _unusedFilename) {
         presentation.append(createFirstSlide());
         presentation.append(createSecondSlide());
         presentation.append(createThirdSlide());
+
+        return "Demo Presentation";
     }
 
     private Slide createFirstSlide() {
         Slide slide = new Slide();
         slide.setTitle("JabberPoint");
-        slide.append(1, "The Java Presentation Tool");
-        slide.append(2, "Copyright (c) 1996-2000: Ian Darwin");
-        slide.append(2, "Copyright (c) 2000-now:");
-        slide.append(2, "Gert Florijn and Sylvia Stuurman");
-        slide.append(4, "Starting JabberPoint without a filename");
-        slide.append(4, "shows this presentation");
-        slide.append(1, "Navigate:");
-        slide.append(3, "Next slide: PgDn or Enter");
-        slide.append(3, "Previous slide: PgUp or up-arrow");
-        slide.append(3, "Quit: q or Q");
+        slide.append(1, "The Java Presentation Tool", TEXT);
+        slide.append(2, "Copyright (c) 1996-2000: Ian Darwin", TEXT);
+        slide.append(2, "Copyright (c) 2000-now:", TEXT);
+        slide.append(2, "Gert Florijn and Sylvia Stuurman", TEXT);
+        slide.append(4, "Starting JabberPoint without a filename", TEXT);
+        slide.append(4, "shows this presentation", TEXT);
+        slide.append(1, "Navigate:", TEXT);
+        slide.append(3, "Next slide: PgDn or Enter", TEXT);
+        slide.append(3, "Previous slide: PgUp or up-arrow", TEXT);
+        slide.append(3, "Quit: q or Q", TEXT);
         return slide;
     }
 
     private Slide createSecondSlide() {
         Slide slide = new Slide();
         slide.setTitle("Demonstration of levels and styles");
-        slide.append(1, "Level 1");
-        slide.append(2, "Level 2");
-        slide.append(1, "Again level 1");
-        slide.append(1, "Level 1 has style number 1");
-        slide.append(2, "Level 2 has style number  2");
-        slide.append(3, "This is how level 3 looks like");
-        slide.append(4, "And this is level 4");
+        slide.append(1, "Level 1", TEXT);
+        slide.append(2, "Level 2", TEXT);
+        slide.append(1, "Again level 1", TEXT);
+        slide.append(1, "Level 1 has style number 1", TEXT);
+        slide.append(2, "Level 2 has style number  2", TEXT);
+        slide.append(3, "This is how level 3 looks like", TEXT);
+        slide.append(4, "And this is level 4", TEXT);
         return slide;
     }
 
     private Slide createThirdSlide() {
         Slide slide = new Slide();
         slide.setTitle("The third slide");
-        slide.append(1, "To open a new presentation,");
-        slide.append(2, "use File->Open from the menu.");
-        slide.append(1, " ");
-        slide.append(1, "This is the end of the presentation.");
-        slide.append(new BitmapItem(1, "JabberPoint.gif"));
+        slide.append(1, "To open a new presentation,", TEXT);
+        slide.append(2, "use File->Open from the menu.", TEXT);
+        slide.append(1, " ", TEXT);
+        slide.append(1, "This is the end of the presentation.", TEXT);
+        slide.append(1, "JabberPoint.gif", IMAGE);
         return slide;
     }
 

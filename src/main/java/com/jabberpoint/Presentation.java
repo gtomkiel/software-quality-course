@@ -1,9 +1,12 @@
 package com.jabberpoint;
 
+import com.jabberpoint.accessor.Accessor;
 import com.jabberpoint.slide.IndexedSlide;
 import com.jabberpoint.slide.Slide;
 import com.jabberpoint.slide.SlideViewerComponent;
+import com.jabberpoint.slide.SlideViewerFrame;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.Flow.Subscriber;
@@ -22,33 +25,91 @@ import java.util.concurrent.Flow.Subscription;
  */
 
 public class Presentation implements Publisher<IndexedSlide> {
+    private final SlideViewerComponent slideViewerComponent;
     private String title;
     private ArrayList<IndexedSlide> slideList = null;
     private int currentSlideNumber = 0;
-    private SlideViewerComponent slideViewComponent;
 
-    public Presentation() {
-        slideViewComponent = null;
+    public Presentation(SlideViewerFrame slideViewerFrame) {
+        this.slideViewerComponent = new SlideViewerComponent(slideViewerFrame);
         clear();
+    }
+
+    public void clear() {
+        slideList = new ArrayList<>();
+        setSlideNumber(-1);
+    }
+
+    public void setSlideNumber(int number) {
+        currentSlideNumber = number;
+        if (slideViewerComponent != null) {
+            slideViewerComponent.updateSlideNumber(currentSlideNumber);
+        }
+    }
+
+    public void load(Accessor accessor, String filename) throws IOException {
+        String title = accessor.loadFile(this, filename);
+        this.subscribe(slideViewerComponent);
+
+        this.slideViewerComponent.setNumberOfSlides(slideList.size());
+        setTitle(title);
+        this.setSlideNumber(0);
+    }
+
+    @Override
+    public void subscribe(Subscriber<? super IndexedSlide> subscriber) {
+        subscriber.onSubscribe(new Subscription() {
+            private boolean subscribed = true;
+
+            @Override
+            public void request(long l) {
+                if (subscribed) {
+                    subscriber.onNext(getSlide(l));
+                }
+            }
+
+            @Override
+            public void cancel() {
+                subscribed = false;
+            }
+        });
+    }
+
+    public IndexedSlide getSlide(long number) {
+        if (number < 0 || number >= getSize()) {
+            return null;
+        }
+
+        return slideList.get((int) number);
     }
 
     public int getSize() {
         return slideList.size();
     }
 
+    public void save(Accessor accessor, String filename) throws IOException {
+        accessor.saveFile(this, filename);
+    }
+
+    public void append(Slide slide) {
+        slideList.add(new IndexedSlide(slide, slideList.size()));
+    }
+
+    public void exit(int status) {
+        System.exit(status);
+    }
+
+    public SlideViewerComponent getSlideViewerComponent() {
+        return slideViewerComponent;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    private void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setSlideNumber(int number) {
-        currentSlideNumber = number;
-        if (slideViewComponent != null) {
-            slideViewComponent.updateSlideNumber(currentSlideNumber);
-        }
+        this.slideViewerComponent.setTitle(title);
     }
 
     public void prevSlide() {
@@ -61,57 +122,5 @@ public class Presentation implements Publisher<IndexedSlide> {
         if (currentSlideNumber < (slideList.size() - 1)) {
             setSlideNumber(currentSlideNumber + 1);
         }
-    }
-
-    public void clear() {
-        slideList = new ArrayList<>();
-        setSlideNumber(-1);
-    }
-
-    public void append(Slide slide) {
-        slideList.add(new IndexedSlide(slide, slideList.size()));
-    }
-
-    public Slide getSlide(int number) {
-        if (number < 0 || number >= getSize()) {
-            return null;
-        }
-
-        return slideList.get(number).slide();
-    }
-
-    public IndexedSlide getIndexedSlide(long number) {
-        if (number < 0 || number >= getSize()) {
-            return null;
-        }
-
-        return slideList.get((int) number);
-    }
-
-    public void exit(int n) {
-        System.exit(n);
-    }
-
-    @Override
-    public void subscribe(Subscriber<? super IndexedSlide> subscriber) {
-        if (slideViewComponent == null) {
-            this.slideViewComponent = (SlideViewerComponent) subscriber;
-        }
-
-        subscriber.onSubscribe(new Subscription() {
-            private boolean subscribed = true;
-
-            @Override
-            public void request(long l) {
-                if (subscribed) {
-                    subscriber.onNext(getIndexedSlide(l));
-                }
-            }
-
-            @Override
-            public void cancel() {
-                subscribed = false;
-            }
-        });
     }
 }

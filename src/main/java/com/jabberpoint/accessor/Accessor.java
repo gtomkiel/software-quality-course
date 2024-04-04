@@ -18,7 +18,16 @@ import java.io.IOException;
  */
 
 public interface Accessor {
-    void loadFile(Presentation p, String fn) throws IOException;
+    /** Load a presentation
+     * @param presentation The presentation to load into
+     * @param file The filename of the presentation
+     * @return The title of the presentation
+     */
+    String loadFile(Presentation presentation, String file) throws IOException;
 
-    void saveFile(Presentation p, String fn) throws IOException;
+    /** Save the presentation
+     * @param presentation The presentation to save
+     * @param file The filename to save the presentation as
+     */
+    void saveFile(Presentation presentation, String file) throws IOException;
 }

@@ -1,13 +1,13 @@
 package com.jabberpoint;
 
-import com.jabberpoint.accessor.DemoPresentation;
-import com.jabberpoint.accessor.XMLAccessor;
+import com.jabberpoint.accessor.Accessor;
+import com.jabberpoint.accessor.AccessorFactory;
+import com.jabberpoint.accessor.XMLAccessorType;
 import com.jabberpoint.slide.SlideViewerFrame;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
-
-import static com.jabberpoint.Constants.*;
 
 /** JabberPoint Main Programme
  * <p>This program is distributed under the terms of the accompanying
@@ -26,19 +26,19 @@ import static com.jabberpoint.Constants.*;
 public class JabberPoint {
     public static void main(String[] argv) {
         Style.createStyles();
-        Presentation presentation = new Presentation();
-        new SlideViewerFrame(JAB_VERSION, presentation);
+        Dimension windowSize = new Dimension(1200, 800);
+        SlideViewerFrame slideViewerFrame = new SlideViewerFrame(Constants.JAB_VERSION, windowSize);
+        Presentation presentation = new Presentation(slideViewerFrame);
+
+        slideViewerFrame.setupWindow(presentation.getSlideViewerComponent(), presentation);
 
         try {
-            if (argv.length == 0) {
-                new DemoPresentation().loadFile(presentation, "");
-            } else {
-                new XMLAccessor().loadFile(presentation, argv[0]);
-            }
-
-            presentation.setSlideNumber(0);
+            Accessor accessor = AccessorFactory.createAccessor(
+                    argv.length == 0 ? XMLAccessorType.DEMO : XMLAccessorType.XML);
+            presentation.load(accessor, argv.length == 0 ? "" : argv[0]);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, IO_ERR + ex, JABBER, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, Constants.Error.IO_ERR + ex, Constants.Error.JABBER,
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 }

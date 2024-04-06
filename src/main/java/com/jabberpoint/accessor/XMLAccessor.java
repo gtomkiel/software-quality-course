@@ -2,10 +2,8 @@ package com.jabberpoint.accessor;
 
 import com.jabberpoint.Presentation;
 import com.jabberpoint.slide.Slide;
-import com.jabberpoint.slideitem.BitmapItem;
 import com.jabberpoint.slideitem.SlideItem;
 import com.jabberpoint.slideitem.SlideItemType;
-import com.jabberpoint.slideitem.TextItem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -64,14 +62,12 @@ public class XMLAccessor implements Accessor {
     }
 
     private void writeTitle(PrintWriter out, String title) {
-        out.println("<showtitle>");
-        out.println(title);
-        out.println("</showtitle>");
+        out.println(String.format("<showtitle>%s</showtitle>", title));
     }
 
     private void writeSlides(PrintWriter out, Presentation presentation) {
         for (int slideNumber = 0; slideNumber < presentation.getSize(); slideNumber++) {
-            writeSlide(out, presentation.getSlide(slideNumber).slide());
+            writeSlide(out, presentation.getSlide(slideNumber).slide()); // TODO: find if slides can be used directly
         }
     }
 
@@ -93,25 +89,11 @@ public class XMLAccessor implements Accessor {
     }
 
     private void writeSlideItem(PrintWriter out, SlideItem slideItem) {
-        out.print("<item kind=");
-        if (slideItem instanceof TextItem) {
-            writeTextItem(out, (TextItem) slideItem);
-        } else if (slideItem instanceof BitmapItem) {
-            writeBitmapItem(out, (BitmapItem) slideItem);
-        } else {
-            System.out.printf("Ignoring %s%n", slideItem);
-        }
-        out.println("</item>");
-    }
+        String kind = slideItem.getType().toString().toLowerCase();
+        int level = slideItem.getLevel();
+        String text = slideItem.getText();
 
-    private void writeTextItem(PrintWriter out, TextItem textItem) {
-        out.print(String.format("\"text\" level=%s\">", textItem.getText()));
-        out.print(textItem.getText());
-    }
-
-    private void writeBitmapItem(PrintWriter out, BitmapItem bitmapItem) {
-        out.print(String.format("\"image\" level=\"%d\">", bitmapItem.getLevel()));
-        out.print(bitmapItem.getName());
+        out.println(String.format("<item kind=\"%s\" level=\"%d\">%s</item>", kind, level, text));
     }
 
     private Document createDocument(String filename) throws ParserConfigurationException, SAXException, IOException {

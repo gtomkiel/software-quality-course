@@ -27,32 +27,35 @@ import java.util.concurrent.Flow.Subscription;
 public class Presentation implements Publisher<IndexedSlide> {
     private final SlideViewerComponent slideViewerComponent;
     private String title;
-    private ArrayList<IndexedSlide> slideList = null;
-    private int currentSlideNumber = 0;
+    private ArrayList<IndexedSlide> slideList;
+    private int currentSlideNumber;
+    private Accessor accessor;
 
     public Presentation(SlideViewerFrame slideViewerFrame) {
         this.slideViewerComponent = new SlideViewerComponent(slideViewerFrame);
-        clear();
+        this.clear();
     }
 
     public void clear() {
-        slideList = new ArrayList<>();
+        this.slideList = new ArrayList<>();
         setSlideNumber(-1);
     }
 
     public void setSlideNumber(int number) {
-        currentSlideNumber = number;
-        if (slideViewerComponent != null) {
+        this.currentSlideNumber = number;
+        if (number >= 0) {
             slideViewerComponent.updateSlideNumber(currentSlideNumber);
         }
     }
 
     public void load(Accessor accessor, String filename) throws IOException {
+        this.clear();
+        this.accessor = accessor;
         String title = accessor.loadFile(this, filename);
         this.subscribe(slideViewerComponent);
 
         this.slideViewerComponent.setNumberOfSlides(slideList.size());
-        setTitle(title);
+        this.setTitle(title);
         this.setSlideNumber(0);
     }
 
@@ -87,7 +90,7 @@ public class Presentation implements Publisher<IndexedSlide> {
         return slideList.size();
     }
 
-    public void save(Accessor accessor, String filename) throws IOException {
+    public void save(String filename) throws IOException, IllegalStateException {
         accessor.saveFile(this, filename);
     }
 

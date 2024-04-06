@@ -40,4 +40,14 @@ public interface SlideItem {
      * @return The level of the item
      */
     int getLevel();
+
+    /** Get the text of the item
+     * @return The text of the item
+     */
+    String getText();
+
+    /** Get the type of the item
+     * @return The type of the item
+     */
+    SlideItemType getType();
 }

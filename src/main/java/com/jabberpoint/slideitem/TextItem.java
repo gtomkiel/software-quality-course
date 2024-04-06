@@ -39,10 +39,6 @@ public class TextItem implements SlideItem {
         return String.format("TextItem[%d,%s]", getLevel(), getText());
     }
 
-    public String getText() {
-        return text == null ? "" : text;
-    }
-
     @Override
     public void draw(int x, int y, float scale, Graphics2D graphics, Style style, ImageObserver observer) {
         if (text == null || text.isEmpty()) {
@@ -78,6 +74,16 @@ public class TextItem implements SlideItem {
     @Override
     public int getLevel() {
         return this.level;
+    }
+
+    @Override
+    public String getText() {
+        return text == null ? "" : text;
+    }
+
+    @Override
+    public SlideItemType getType() {
+        return SlideItemType.TEXT;
     }
 
     private List<TextLayout> getLayouts(Graphics2D graphics, Style style, float scale) {

@@ -39,10 +39,6 @@ public class BitmapItem implements SlideItem {
         }
     }
 
-    public String getName() {
-        return imageName;
-    }
-
     @Override
     public String toString() {
         return String.format("BitmapItem[%d %s]", getLevel(), imageName);
@@ -67,6 +63,16 @@ public class BitmapItem implements SlideItem {
     @Override
     public int getLevel() {
         return this.level;
+    }
+
+    @Override
+    public String getText() {
+        return imageName;
+    }
+
+    @Override
+    public SlideItemType getType() {
+        return SlideItemType.IMAGE;
     }
 
     private int getScaledIndent(float scale, Style style) {

@@ -75,8 +75,6 @@ public class MenuController extends MenuBar {
     }
 
     private void openFile(ActionEvent e) {
-        presentation.clear();
-
         try {
             presentation.load(new XMLAccessor(), TEST_FILE);
         } catch (IOException exc) {
@@ -93,9 +91,11 @@ public class MenuController extends MenuBar {
 
     private void saveFile(ActionEvent e) {
         try {
-            presentation.save(new XMLAccessor(), SAVE_FILE);
+            presentation.save(SAVE_FILE);
         } catch (IOException exc) {
             JOptionPane.showMessageDialog(parent, IO_EX + exc, SAVE_ERR, JOptionPane.ERROR_MESSAGE);
+        } catch (IllegalStateException exc) {
+            JOptionPane.showMessageDialog(parent, exc.getMessage(), SAVE_ERR, JOptionPane.ERROR_MESSAGE);
         }
     }
 

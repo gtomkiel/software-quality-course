@@ -46,18 +46,19 @@ public class BitmapItem implements SlideItem {
 
     @Override
     public void draw(int x, int y, float scale, Graphics2D graphics, Style style, ImageObserver observer) {
-        int scaledIndent = getScaledIndent(scale, style);
-        int scaledWidth = getScaledWidth(observer, scale);
-        int scaledHeight = getScaledHeight(observer, scale, style);
-        graphics.drawImage(bufferedImage, x + scaledIndent, y + scaledIndent, scaledWidth, scaledHeight, observer);
+        Rectangle boundingBox = this.getBoundingBox(graphics, observer, scale, style);
+        graphics.drawImage(bufferedImage, x + boundingBox.x, y + boundingBox.y, boundingBox.width, boundingBox.height,
+                observer);
     }
 
     @Override
     public Rectangle getBoundingBox(Graphics2D graphics, ImageObserver observer, float scale, Style style) {
-        int scaledIndent = getScaledIndent(scale, style);
-        int scaledWidth = getScaledWidth(observer, scale);
-        int scaledHeight = getScaledHeight(observer, scale, style);
-        return new Rectangle(scaledIndent, 0, scaledWidth, scaledHeight);
+        int indent = this.getScaledIndent(scale, style);
+        int leading = this.getScaledLeading(scale, style);
+        int width = this.getScaledWidth(observer, scale);
+        int height = this.getScaledHeight(observer, scale, style);
+
+        return new Rectangle(indent, leading, width, leading + height);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class BitmapItem implements SlideItem {
 
     @Override
     public String getText() {
-        return imageName;
+        return this.imageName;
     }
 
     @Override
@@ -77,6 +78,10 @@ public class BitmapItem implements SlideItem {
 
     private int getScaledIndent(float scale, Style style) {
         return (int) (style.getIndent() * scale);
+    }
+
+    private int getScaledLeading(float scale, Style style) {
+        return (int) (style.getLeading() * scale);
     }
 
     private int getScaledWidth(ImageObserver observer, float scale) {

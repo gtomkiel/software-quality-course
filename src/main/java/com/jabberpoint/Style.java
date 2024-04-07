@@ -1,7 +1,6 @@
 package com.jabberpoint;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.util.ArrayList;
 
 /** <p>Style is for Indent, Color, Font and Leading.</p>

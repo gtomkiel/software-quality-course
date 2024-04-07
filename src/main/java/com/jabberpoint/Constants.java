@@ -3,6 +3,10 @@ package com.jabberpoint;
 public class Constants {
     // Jabberpoint version string
     public static final String JAB_VERSION = "Jabberpoint 1.6 - OU version";
+    // File names
+    public static final String TEST_FILE = "test.xml";
+    public static final String SAVE_FILE = "dump.xml";
+
     // Error messages
     public static class Error {
         public static final String NFE = "Number Format Exception";
@@ -14,6 +18,7 @@ public class Constants {
         public static final String NOT_FOUND = " not found";
         public static final String FILE_ERROR = "File ";
     }
+
     // Menu Controller options
     public static class Menu {
         public static final String ABOUT = "About";
@@ -29,7 +34,4 @@ public class Constants {
         public static final String SAVE = "Save";
         public static final String VIEW = "View";
     }
-    // File names
-    public static final String TEST_FILE = "test.xml";
-    public static final String SAVE_FILE = "dump.xml";
 }

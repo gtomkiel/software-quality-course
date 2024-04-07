@@ -12,6 +12,13 @@ public class TestUtils {
         return url.getFile();
     }
 
+    public static String getTestXmlPath() {
+        ClassLoader classLoader = TestUtils.class.getClassLoader();
+        URL url = classLoader.getResource("test.xml");
+        assert url != null;
+        return url.getFile();
+    }
+
     public static <T> T getPrivateField(Object object, String fieldName, Class<T> fieldType)
             throws NoSuchFieldException, IllegalAccessException {
         Field field = object.getClass().getDeclaredField(fieldName);

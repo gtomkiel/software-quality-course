@@ -1,6 +1,7 @@
 package com.jabberpoint.accessor;
 
-import com.jabberpoint.Presentation;
+import com.jabberpoint.presentation.PresentationData;
+import com.jabberpoint.slide.IndexedSlide;
 import com.jabberpoint.slide.Slide;
 import com.jabberpoint.slideitem.SlideItem;
 import com.jabberpoint.slideitem.SlideItemType;
@@ -31,26 +32,27 @@ import static com.jabberpoint.Constants.Error.NFE;
  */
 
 public class XMLAccessor implements Accessor {
-    public String loadFile(Presentation presentation, String filename) {
+    public PresentationData loadFile(String filename) {
         try {
             Document document = createDocument(filename);
             Element documentElement = document.getDocumentElement();
             NodeList slides = getElementsByTagName(documentElement, XMLType.SLIDE);
 
-            loadSlides(presentation, slides);
+            ArrayList<IndexedSlide> indexedSlides = loadSlides(slides);
+            String title = getTitle(documentElement, XMLType.SHOWTITLE);
 
-            return getTitle(documentElement, XMLType.SHOWTITLE);
+            return new PresentationData(title, indexedSlides);
         } catch (IOException | SAXException | ParserConfigurationException e) {
             System.err.println(e.getMessage());
         }
-        return filename;
+        return null;
     }
 
-    public void saveFile(Presentation presentation, String filename) throws IOException {
+    public void saveFile(String filename, ArrayList<IndexedSlide> slides, String title) throws IOException {
         try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
             writeHeader(out);
-            writeTitle(out, presentation.getTitle());
-            writeSlides(out, presentation);
+            writeTitle(out, title);
+            writeSlides(out, slides);
             writeFooter(out);
         }
     }
@@ -62,12 +64,12 @@ public class XMLAccessor implements Accessor {
     }
 
     private void writeTitle(PrintWriter out, String title) {
-        out.println(String.format("<showtitle>%s</showtitle>", title));
+        out.printf("<showtitle>%s</showtitle>\n", title);
     }
 
-    private void writeSlides(PrintWriter out, Presentation presentation) {
-        for (int slideNumber = 0; slideNumber < presentation.getSize(); slideNumber++) {
-            writeSlide(out, presentation.getSlide(slideNumber).slide()); // TODO: find if slides can be used directly
+    private void writeSlides(PrintWriter out, ArrayList<IndexedSlide> slides) {
+        for (IndexedSlide slide : slides) {
+            writeSlide(out, slide.slide());
         }
     }
 
@@ -77,7 +79,7 @@ public class XMLAccessor implements Accessor {
 
     private void writeSlide(PrintWriter out, Slide slide) {
         out.println("<slide>");
-        out.println(String.format("<title>%s</title>", slide.getTitle()));
+        out.printf("<title>%s</title>\n", slide.getTitle());
         writeSlideItems(out, slide.getSlideItems());
         out.println("</slide>");
     }
@@ -93,7 +95,7 @@ public class XMLAccessor implements Accessor {
         int level = slideItem.getLevel();
         String text = slideItem.getText();
 
-        out.println(String.format("<item kind=\"%s\" level=\"%d\">%s</item>", kind, level, text));
+        out.printf("<item kind=\"%s\" level=\"%d\">%s</item>\n", kind, level, text);
     }
 
     private Document createDocument(String filename) throws ParserConfigurationException, SAXException, IOException {
@@ -102,18 +104,26 @@ public class XMLAccessor implements Accessor {
         return builder.parse(new File(filename));
     }
 
-    private void loadSlides(Presentation presentation, NodeList slides) {
-        int max = slides.getLength();
+    private ArrayList<IndexedSlide> loadSlides(NodeList slides) {
+        ArrayList<IndexedSlide> indexedSlides = new ArrayList<>();
 
-        for (int slideNumber = 0; slideNumber < max; slideNumber++) {
+        for (int slideNumber = 0; slideNumber < slides.getLength(); slideNumber++) {
             Element xmlSlide = (Element) slides.item(slideNumber);
-            Slide slide = new Slide();
-            slide.setTitle(getTitle(xmlSlide, XMLType.TITLE));
-            presentation.append(slide);
-
-            NodeList slideItems = getElementsByTagName(xmlSlide, XMLType.ITEM);
-            loadSlideItems(slide, slideItems);
+            Slide slide = createSlide(xmlSlide);
+            indexedSlides.add(new IndexedSlide(slideNumber, slide));
         }
+
+        return indexedSlides;
+    }
+
+    private Slide createSlide(Element xmlSlide) {
+        Slide slide = new Slide();
+        slide.setTitle(getTitle(xmlSlide, XMLType.TITLE));
+
+        NodeList slideItems = getElementsByTagName(xmlSlide, XMLType.ITEM);
+        loadSlideItems(slide, slideItems);
+
+        return slide;
     }
 
     private String getTitle(Element element, XMLType tagName) {

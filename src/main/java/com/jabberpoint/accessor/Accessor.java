@@ -1,8 +1,10 @@
 package com.jabberpoint.accessor;
 
-import com.jabberpoint.Presentation;
+import com.jabberpoint.presentation.PresentationData;
+import com.jabberpoint.slide.IndexedSlide;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * <p>An Accessor allows you to read or write data for a presentation
@@ -18,16 +20,18 @@ import java.io.IOException;
  */
 
 public interface Accessor {
-    /** Load a presentation
-     * @param presentation The presentation to load into
+    /**
+     * Load a presentation
+     *
      * @param file The filename of the presentation
-     * @return The title of the presentation
+     * @return The presentation data
      */
-    String loadFile(Presentation presentation, String file) throws IOException;
+    PresentationData loadFile(String file) throws IOException;
 
     /** Save the presentation
-     * @param presentation The presentation to save
      * @param file The filename to save the presentation as
+     * @param slides The slides to save
+     * @param title The title of the presentation
      */
-    void saveFile(Presentation presentation, String file) throws IOException;
+    void saveFile(String file, ArrayList<IndexedSlide> slides, String title) throws IOException;
 }

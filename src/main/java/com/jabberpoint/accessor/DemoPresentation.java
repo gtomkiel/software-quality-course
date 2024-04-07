@@ -1,7 +1,10 @@
 package com.jabberpoint.accessor;
 
-import com.jabberpoint.Presentation;
+import com.jabberpoint.presentation.PresentationData;
+import com.jabberpoint.slide.IndexedSlide;
 import com.jabberpoint.slide.Slide;
+
+import java.util.ArrayList;
 
 import static com.jabberpoint.slideitem.SlideItemType.IMAGE;
 import static com.jabberpoint.slideitem.SlideItemType.TEXT;
@@ -17,12 +20,15 @@ import static com.jabberpoint.slideitem.SlideItemType.TEXT;
  */
 
 public class DemoPresentation implements Accessor {
-    public String loadFile(Presentation presentation, String _unusedFilename) {
-        presentation.append(createFirstSlide());
-        presentation.append(createSecondSlide());
-        presentation.append(createThirdSlide());
+    public PresentationData loadFile(String _unusedFilename) {
+        ArrayList<IndexedSlide> indexedSlides = new ArrayList<>();
+        String title = "Demo Presentation";
 
-        return "Demo Presentation";
+        indexedSlides.add(new IndexedSlide(0, createFirstSlide()));
+        indexedSlides.add(new IndexedSlide(1, createSecondSlide()));
+        indexedSlides.add(new IndexedSlide(2, createThirdSlide()));
+
+        return new PresentationData(title, indexedSlides);
     }
 
     private Slide createFirstSlide() {
@@ -65,7 +71,7 @@ public class DemoPresentation implements Accessor {
         return slide;
     }
 
-    public void saveFile(Presentation presentation, String unusedFilename) {
+    public void saveFile(String unusedFilename, ArrayList<IndexedSlide> unusedSlides, String unusedTitle) {
         throw new IllegalStateException("Save As->Demo! called");
     }
 }

@@ -1,8 +1,7 @@
-package com.jabberpoint;
+package com.jabberpoint.presentation;
 
 import com.jabberpoint.accessor.Accessor;
 import com.jabberpoint.slide.IndexedSlide;
-import com.jabberpoint.slide.Slide;
 import com.jabberpoint.slide.SlideViewerComponent;
 import com.jabberpoint.slide.SlideViewerFrame;
 
@@ -51,11 +50,12 @@ public class Presentation implements Publisher<IndexedSlide> {
     public void load(Accessor accessor, String filename) throws IOException {
         this.clear();
         this.accessor = accessor;
-        String title = accessor.loadFile(this, filename);
+        PresentationData data = accessor.loadFile(filename);
         this.subscribe(slideViewerComponent);
 
-        this.slideViewerComponent.setNumberOfSlides(slideList.size());
-        this.setTitle(title);
+        this.slideList = data.getSlides();
+        this.slideViewerComponent.setNumberOfSlides(this.slideList.size());
+        this.setTitle(data.getTitle());
         this.setSlideNumber(0);
     }
 
@@ -78,6 +78,11 @@ public class Presentation implements Publisher<IndexedSlide> {
         });
     }
 
+    private void setTitle(String title) {
+        this.title = title;
+        this.slideViewerComponent.setTitle(title);
+    }
+
     public IndexedSlide getSlide(long number) {
         if (number < 0 || number >= getSize()) {
             return null;
@@ -91,11 +96,7 @@ public class Presentation implements Publisher<IndexedSlide> {
     }
 
     public void save(String filename) throws IOException, IllegalStateException {
-        accessor.saveFile(this, filename);
-    }
-
-    public void append(Slide slide) {
-        slideList.add(new IndexedSlide(slide, slideList.size()));
+        accessor.saveFile(filename, slideList, title);
     }
 
     public void exit(int status) {
@@ -104,15 +105,6 @@ public class Presentation implements Publisher<IndexedSlide> {
 
     public SlideViewerComponent getSlideViewerComponent() {
         return slideViewerComponent;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    private void setTitle(String title) {
-        this.title = title;
-        this.slideViewerComponent.setTitle(title);
     }
 
     public void prevSlide() {

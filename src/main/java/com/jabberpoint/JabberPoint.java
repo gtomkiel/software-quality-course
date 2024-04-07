@@ -3,6 +3,7 @@ package com.jabberpoint;
 import com.jabberpoint.accessor.Accessor;
 import com.jabberpoint.accessor.AccessorFactory;
 import com.jabberpoint.accessor.XMLAccessorType;
+import com.jabberpoint.presentation.Presentation;
 import com.jabberpoint.slide.SlideViewerFrame;
 
 import javax.swing.*;

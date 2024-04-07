@@ -1,14 +1,15 @@
 package com.jabberpoint.controller;
 
-import com.jabberpoint.Presentation;
-import com.jabberpoint.accessor.XMLAccessor;
+import com.jabberpoint.presentation.Presentation;
+import com.jabberpoint.accessor.Accessor;
+import com.jabberpoint.accessor.AccessorFactory;
+import com.jabberpoint.accessor.XMLAccessorType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.Serial;
 
 import static com.jabberpoint.Constants.Error.*;
 import static com.jabberpoint.Constants.Menu.*;
@@ -26,8 +27,6 @@ import static com.jabberpoint.Constants.TEST_FILE;
  */
 
 public class MenuController extends MenuBar {
-    @Serial
-    private static final long serialVersionUID = 227L;
     private final Frame parent;
     private final Presentation presentation;
 
@@ -76,7 +75,8 @@ public class MenuController extends MenuBar {
 
     private void openFile(ActionEvent e) {
         try {
-            presentation.load(new XMLAccessor(), TEST_FILE);
+            Accessor accessor = AccessorFactory.createAccessor(XMLAccessorType.XML);
+            presentation.load(accessor, TEST_FILE);
         } catch (IOException exc) {
             JOptionPane.showMessageDialog(parent, IO_EX + exc, LOAD_ERR, JOptionPane.ERROR_MESSAGE);
         }

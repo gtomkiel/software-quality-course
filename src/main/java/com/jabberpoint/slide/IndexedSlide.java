@@ -1,3 +1,3 @@
 package com.jabberpoint.slide;
 
-public record IndexedSlide(Slide slide, int index) {}
+public record IndexedSlide(int index, Slide slide) {}

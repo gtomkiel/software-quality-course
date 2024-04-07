@@ -1,6 +1,6 @@
 package com.jabberpoint.slide;
 
-import com.jabberpoint.Presentation;
+import com.jabberpoint.presentation.Presentation;
 import com.jabberpoint.controller.KeyController;
 import com.jabberpoint.controller.MenuController;
 
@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.Serial;
 
 import static com.jabberpoint.Constants.JAB_VERSION;
 
@@ -24,8 +23,6 @@ import static com.jabberpoint.Constants.JAB_VERSION;
  */
 
 public class SlideViewerFrame extends JFrame {
-    @Serial
-    private static final long serialVersionUID = 3227L;
     private final Dimension dimension;
 
     public SlideViewerFrame(String title, Dimension dimension) {

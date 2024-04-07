@@ -5,6 +5,7 @@ on:
     branches: [ "production" ]
     types:
       - closed
+  workflow_dispatch:
 
 jobs:
   merge:

@@ -86,7 +86,7 @@ public class XMLLoader {
         }
     }
 
-    protected void loadSlideItem(Slide slide, Element item) {
+    private void loadSlideItem(Slide slide, Element item) {
         int level = getLevel(item);
         String text = getTextContent(item, XMLType.KIND);
 

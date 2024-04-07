@@ -36,4 +36,4 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven JDK ${{ matrix.java-version }}
-        run: mvn clean package -Dmaven.compiler.source=${{ matrix.java-version }} -Dmaven.compiler.target=${{ matrix.java-version }} --enable-preview
+        run: mvn clean package -Dmaven.compiler.source=${{ matrix.java-version }} -Dmaven.compiler.target=${{ matrix.java-version }}

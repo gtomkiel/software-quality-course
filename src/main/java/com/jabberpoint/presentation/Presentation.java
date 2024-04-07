@@ -58,8 +58,8 @@ public class Presentation implements Publisher<IndexedSlide> {
         this.setSlideNumber(0);
     }
 
-    private void setSlideViewerComponent(SlideViewerComponent slideViewerComponent) {
-        this.slideViewerComponent = slideViewerComponent;
+    public int getSize() {
+        return slideList.size();
     }
 
     @Override
@@ -85,16 +85,16 @@ public class Presentation implements Publisher<IndexedSlide> {
         });
     }
 
+    private void setSlideViewerComponent(SlideViewerComponent slideViewerComponent) {
+        this.slideViewerComponent = slideViewerComponent;
+    }
+
     public IndexedSlide getSlide(long number) {
         if (number < 0 || number >= this.getSize()) {
             return null;
         }
 
         return slideList.get((int) number);
-    }
-
-    public int getSize() {
-        return slideList.size();
     }
 
     public void save(String filename) throws IOException, IllegalStateException {

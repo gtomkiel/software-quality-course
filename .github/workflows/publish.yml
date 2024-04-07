@@ -7,7 +7,12 @@ on:
       - closed
 
 jobs:
-  if_merged:
+  merge:
+
+    strategy:
+      matrix:
+        java-version: [22]
+      
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:

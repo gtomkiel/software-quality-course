@@ -27,18 +27,19 @@ public class SlideViewerComponent extends JComponent implements Subscriber<Index
         this.labelFont = new Font("Dialog", Font.BOLD, 10);
     }
 
-    public void setTitle(String title) {
-        frame.setTitle(title);
-    }
-
-    public void setNumberOfSlides(int numberOfSlides) {
-        this.numberOfSlides = numberOfSlides;
-    }
-
     public void updateSlideNumber(int slideNumber) {
         if (this.subscription != null) {
             this.subscription.request(slideNumber);
         }
+    }
+
+    public void loadSlides(int numberOfSlides, String title) {
+        this.numberOfSlides = numberOfSlides;
+        this.frame.setTitle(title);
+    }
+
+    public String getTitle() {
+        return this.frame.getTitle();
     }
 
     @Override

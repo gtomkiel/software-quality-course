@@ -17,25 +17,28 @@ import java.util.ArrayList;
  */
 
 public class Style {
-    private static final String FONT_NAME = "Helvetica";
     private static final ArrayList<Style> styles = new ArrayList<>();
     private final int indent, fontSize, leading;
     private final Color color;
     private final Font font;
 
-    public Style(int indent, Color color, int points, int leading) {
+    public Style(int indent, Color color, int points, int leading, String fontName, int fontStyle) {
         this.indent = indent;
         this.color = color;
-        font = new Font(FONT_NAME, Font.BOLD, fontSize = points);
+        this.font = new Font(fontName, fontStyle, fontSize = points);
         this.leading = leading;
     }
 
-    public static void createStyles() {
-        styles.add(new Style(0, Color.red, 48, 20));    // style for item-level 0
-        styles.add(new Style(20, Color.blue, 40, 10));  // style for item-level 1
-        styles.add(new Style(50, Color.black, 36, 10)); // style for item-level 2
-        styles.add(new Style(70, Color.black, 30, 10)); // style for item-level 3
-        styles.add(new Style(90, Color.black, 24, 10)); // style for item-level 4
+    /**
+     * Create styles for different levels
+     * @param fontName the name of the font
+     */
+    public static void createStyles(String fontName) {
+        styles.add(new Style(0, Color.red, 48, 20, fontName, Font.BOLD));
+        styles.add(new Style(20, Color.blue, 40, 10, fontName, Font.BOLD));
+        styles.add(new Style(50, Color.black, 36, 10, fontName, Font.BOLD));
+        styles.add(new Style(70, Color.black, 30, 10, fontName, Font.BOLD));
+        styles.add(new Style(90, Color.black, 24, 10, fontName, Font.BOLD));
     }
 
     public static Style getStyle(int level) {

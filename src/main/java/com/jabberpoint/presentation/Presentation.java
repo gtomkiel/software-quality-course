@@ -3,7 +3,6 @@ package com.jabberpoint.presentation;
 import com.jabberpoint.accessor.Accessor;
 import com.jabberpoint.slide.IndexedSlide;
 import com.jabberpoint.slide.SlideViewerComponent;
-import com.jabberpoint.slide.SlideViewerFrame;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,14 +23,12 @@ import java.util.concurrent.Flow.Subscription;
  */
 
 public class Presentation implements Publisher<IndexedSlide> {
-    private final SlideViewerComponent slideViewerComponent;
-    private String title;
+    private SlideViewerComponent slideViewerComponent;
     private ArrayList<IndexedSlide> slideList;
     private int currentSlideNumber;
     private Accessor accessor;
 
-    public Presentation(SlideViewerFrame slideViewerFrame) {
-        this.slideViewerComponent = new SlideViewerComponent(slideViewerFrame);
+    public Presentation() {
         this.clear();
     }
 
@@ -51,16 +48,22 @@ public class Presentation implements Publisher<IndexedSlide> {
         this.clear();
         this.accessor = accessor;
         PresentationData data = accessor.loadFile(filename);
-        this.subscribe(slideViewerComponent);
 
         this.slideList = data.getSlides();
-        this.slideViewerComponent.setNumberOfSlides(this.slideList.size());
-        this.setTitle(data.getTitle());
+        this.slideViewerComponent.loadSlides(this.getSize(), data.getTitle());
         this.setSlideNumber(0);
+    }
+
+    private void setSlideViewerComponent(SlideViewerComponent slideViewerComponent) {
+        this.slideViewerComponent = slideViewerComponent;
     }
 
     @Override
     public void subscribe(Subscriber<? super IndexedSlide> subscriber) {
+        if (this.slideViewerComponent == null && subscriber instanceof SlideViewerComponent) {
+            this.setSlideViewerComponent((SlideViewerComponent) subscriber);
+        }
+
         subscriber.onSubscribe(new Subscription() {
             private boolean subscribed = true;
 
@@ -78,13 +81,8 @@ public class Presentation implements Publisher<IndexedSlide> {
         });
     }
 
-    private void setTitle(String title) {
-        this.title = title;
-        this.slideViewerComponent.setTitle(title);
-    }
-
     public IndexedSlide getSlide(long number) {
-        if (number < 0 || number >= getSize()) {
+        if (number < 0 || number >= this.getSize()) {
             return null;
         }
 
@@ -96,15 +94,11 @@ public class Presentation implements Publisher<IndexedSlide> {
     }
 
     public void save(String filename) throws IOException, IllegalStateException {
-        accessor.saveFile(filename, slideList, title);
+        accessor.saveFile(filename, slideList, this.slideViewerComponent.getTitle());
     }
 
     public void exit(int status) {
         System.exit(status);
-    }
-
-    public SlideViewerComponent getSlideViewerComponent() {
-        return slideViewerComponent;
     }
 
     public void prevSlide() {

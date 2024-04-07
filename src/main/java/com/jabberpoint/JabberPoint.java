@@ -26,20 +26,29 @@ import java.io.IOException;
 
 public class JabberPoint {
     public static void main(String[] argv) {
-        Style.createStyles();
+        Style.createStyles("Helvetica");
+        Presentation presentation = new Presentation();
         Dimension windowSize = new Dimension(1200, 800);
         SlideViewerFrame slideViewerFrame = new SlideViewerFrame(Constants.JAB_VERSION, windowSize);
-        Presentation presentation = new Presentation(slideViewerFrame);
 
-        slideViewerFrame.setupWindow(presentation.getSlideViewerComponent(), presentation);
+        slideViewerFrame.setupWindow(presentation);
 
         try {
-            Accessor accessor = AccessorFactory.createAccessor(
-                    argv.length == 0 ? AccessorType.DEMO : AccessorType.XML);
-            presentation.load(accessor, argv.length == 0 ? "" : argv[0]);
+            Accessor accessor = createAccessor(argv);
+            String filename = getFilename(argv);
+            presentation.load(accessor, filename);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, Constants.Error.IO_ERR + ex, Constants.Error.JABBER,
                     JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private static Accessor createAccessor(String[] argv) {
+        AccessorType accessorType = argv.length == 0 ? AccessorType.DEMO : AccessorType.XML;
+        return AccessorFactory.createAccessor(accessorType);
+    }
+
+    private static String getFilename(String[] argv) {
+        return argv.length == 0 ? "" : argv[0];
     }
 }

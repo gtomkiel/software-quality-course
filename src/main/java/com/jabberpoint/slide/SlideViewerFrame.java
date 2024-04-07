@@ -24,20 +24,23 @@ import static com.jabberpoint.Constants.JAB_VERSION;
 
 public class SlideViewerFrame extends JFrame {
     private final Dimension dimension;
+    private final SlideViewerComponent slideViewerComponent;
 
     public SlideViewerFrame(String title, Dimension dimension) {
         super(title);
         this.dimension = dimension;
+        this.slideViewerComponent = new SlideViewerComponent(this);
     }
 
-    public void setupWindow(SlideViewerComponent slideViewerComponent, Presentation presentation) {
+    public void setupWindow(Presentation presentation) {
+        presentation.subscribe(this.slideViewerComponent);
         setTitle(JAB_VERSION);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 presentation.exit(0);
             }
         });
-        getContentPane().add(slideViewerComponent);
+        getContentPane().add(this.slideViewerComponent);
         addKeyListener(new KeyController(presentation));
         setMenuBar(new MenuController(this, presentation));
         setSize(dimension);

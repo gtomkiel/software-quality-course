@@ -1,21 +1,15 @@
-name: Building
+name: Publish
 
 on:
-  push:
-    branches: [ "development" ]
   pull_request:
-    branches: [ "development" ]
-  workflow_dispatch:
+    branches: [ "production" ]
+    types:
+      - closed
 
 jobs:
-  build:
-
-    strategy:
-      matrix:
-        java-version: [22]
-
+  if_merged:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -38,5 +32,15 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build with Maven JDK ${{ matrix.java-version }}
-        run: mvn clean package -DskipTests -Dmaven.test.skip=true
+      - name: Build the application
+        run: mvn package
+
+      - name: Get current version
+        run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "target/**.jar"
+          name: ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}

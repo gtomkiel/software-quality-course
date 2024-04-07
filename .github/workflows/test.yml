@@ -1,14 +1,21 @@
-name: Building
+name: Testing
 
 on:
   push:
-    branches: [ "development" ]
+    branches: [ "testing" ]
   pull_request:
-    branches: [ "development" ]
+    branches: [ "testing" ]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
 
     strategy:
       matrix:
@@ -38,5 +45,27 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build with Maven JDK ${{ matrix.java-version }}
-        run: mvn clean package -DskipTests -Dmaven.test.skip=true
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Run PMD
+        id: pmd
+        uses: pmd/pmd-github-action@v2
+        with:
+          version: '6.55.0'
+          sourcePath: 'src/main/java'
+          rulesets: 'rulesets/java/quickstart.xml,ruleset.xml'
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: pmd-report.sarif
+
+      - name: Generate Jacoco report
+        run: mvn jacoco:report
+
+      - name: Upload Jacoco Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/index.html

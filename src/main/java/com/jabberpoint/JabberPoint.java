@@ -5,6 +5,7 @@ import com.jabberpoint.accessor.AccessorFactory;
 import com.jabberpoint.accessor.AccessorType;
 import com.jabberpoint.presentation.Presentation;
 import com.jabberpoint.slide.SlideViewerFrame;
+import com.jabberpoint.style.StyleManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +27,7 @@ import java.io.IOException;
 
 public class JabberPoint {
     public static void main(String[] argv) {
-        Style.createStyles("Helvetica");
+        StyleManager.createStyles("Helvetica", "Dialog");
         Presentation presentation = new Presentation();
         Dimension windowSize = new Dimension(1200, 800);
         SlideViewerFrame slideViewerFrame = new SlideViewerFrame(Constants.JAB_VERSION, windowSize);

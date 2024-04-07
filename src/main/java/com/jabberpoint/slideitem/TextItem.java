@@ -1,6 +1,6 @@
 package com.jabberpoint.slideitem;
 
-import com.jabberpoint.Style;
+import com.jabberpoint.style.Style;
 import com.jabberpoint.slide.Slide;
 
 import java.awt.*;

@@ -1,5 +1,7 @@
 package com.jabberpoint.slide;
 
+import com.jabberpoint.style.StyleManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.Flow.Subscriber;
@@ -16,7 +18,6 @@ import java.util.concurrent.Flow.Subscription;
  */
 
 public class SlideViewerComponent extends JComponent implements Subscriber<IndexedSlide> {
-    private final Font labelFont;
     private final JFrame frame;
     private IndexedSlide slide;
     private Subscription subscription;
@@ -24,7 +25,6 @@ public class SlideViewerComponent extends JComponent implements Subscriber<Index
 
     public SlideViewerComponent(JFrame frame) {
         this.frame = frame;
-        this.labelFont = new Font("Dialog", Font.BOLD, 10);
     }
 
     public void updateSlideNumber(int slideNumber) {
@@ -44,16 +44,12 @@ public class SlideViewerComponent extends JComponent implements Subscriber<Index
 
     @Override
     public void paintComponent(Graphics graphics) {
-        initGraphics(graphics, Color.white, Color.black, labelFont);
+        initGraphics(graphics, Color.white, Color.black, StyleManager.getLabelFont());
 
         if (this.slide != null && this.slide.index() >= 0) {
             int y = drawSlideNumber((Graphics2D) graphics, 20);
             drawSlide(graphics, y);
         }
-    }
-
-    public Dimension getPreferredSize() {
-        return new Dimension(Slide.WIDTH, Slide.HEIGHT);
     }
 
     private void initGraphics(Graphics graphics, Color background, Color foreground, Font labelFont) {

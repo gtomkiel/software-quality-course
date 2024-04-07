@@ -1,7 +1,6 @@
-package com.jabberpoint;
+package com.jabberpoint.style;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 /** <p>Style is for Indent, Color, Font and Leading.</p>
  * <p>Direct relation between style-number and item-level:
@@ -17,35 +16,16 @@ import java.util.ArrayList;
  */
 
 public class Style {
-    private static final ArrayList<Style> styles = new ArrayList<>();
     private final int indent, fontSize, leading;
     private final Color color;
     private final Font font;
 
     public Style(int indent, Color color, int points, int leading, String fontName, int fontStyle) {
         this.indent = indent;
-        this.color = color;
-        this.font = new Font(fontName, fontStyle, fontSize = points);
+        this.fontSize = points;
         this.leading = leading;
-    }
-
-    /**
-     * Create styles for different levels
-     * @param fontName the name of the font
-     */
-    public static void createStyles(String fontName) {
-        styles.add(new Style(0, Color.red, 48, 20, fontName, Font.BOLD));
-        styles.add(new Style(20, Color.blue, 40, 10, fontName, Font.BOLD));
-        styles.add(new Style(50, Color.black, 36, 10, fontName, Font.BOLD));
-        styles.add(new Style(70, Color.black, 30, 10, fontName, Font.BOLD));
-        styles.add(new Style(90, Color.black, 24, 10, fontName, Font.BOLD));
-    }
-
-    public static Style getStyle(int level) {
-        if (level >= styles.size()) {
-            level = styles.size() - 1;
-        }
-        return styles.get(level);
+        this.color = color;
+        this.font = new Font(fontName, fontStyle, points);
     }
 
     public String toString() {

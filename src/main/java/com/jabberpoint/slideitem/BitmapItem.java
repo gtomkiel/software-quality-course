@@ -1,6 +1,6 @@
 package com.jabberpoint.slideitem;
 
-import com.jabberpoint.Style;
+import com.jabberpoint.style.Style;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -78,12 +78,12 @@ public class BitmapItem implements SlideItem {
         return SlideItemType.IMAGE;
     }
 
-    private int getScaledIndent(float scale, Style style) {
-        return (int) (style.getIndent() * scale);
-    }
-
     private int getScaledLeading(float scale, Style style) {
         return (int) (style.getLeading() * scale);
+    }
+
+    private int getScaledIndent(float scale, Style style) {
+        return (int) (style.getIndent() * scale);
     }
 
     private int getScaledWidth(ImageObserver observer, float scale) {

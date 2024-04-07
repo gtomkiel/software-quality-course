@@ -1,6 +1,7 @@
 package com.jabberpoint.slide;
 
-import com.jabberpoint.Style;
+import com.jabberpoint.style.Style;
+import com.jabberpoint.style.StyleManager;
 import com.jabberpoint.slideitem.SlideItem;
 import com.jabberpoint.slideitem.SlideItemFactory;
 import com.jabberpoint.slideitem.SlideItemType;
@@ -62,7 +63,7 @@ public class Slide {
     }
 
     private int drawSlideItem(SlideItem slideItem, int x, int y, float scale, Graphics2D graphics, ImageObserver view) {
-        Style style = Style.getStyle(slideItem.getLevel());
+        Style style = StyleManager.getStyle(slideItem.getLevel());
         slideItem.draw(x, y, scale, graphics, style, view);
         return y + slideItem.getBoundingBox(graphics, view, scale, style).height;
     }

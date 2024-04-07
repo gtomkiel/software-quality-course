@@ -35,5 +35,5 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build with Maven
-        run: mvn clean package
+      - name: Build with Maven JDK ${{ matrix.java-version }}
+        run: mvn clean package -Dmaven.compiler.source=${{ matrix.java-version }} -Dmaven.compiler.target=${{ matrix.java-version }}

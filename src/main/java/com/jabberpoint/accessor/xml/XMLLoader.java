@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import static com.jabberpoint.Constants.Error.NFE;
 
 public class XMLLoader {
-    public PresentationData loadFile(String filename) {
+    public PresentationData loadFile(String filename) throws IOException {
         try {
             Document document = createDocument(filename);
             Element documentElement = document.getDocumentElement();
@@ -29,7 +29,7 @@ public class XMLLoader {
             String title = getTitle(documentElement, XMLType.SHOWTITLE);
 
             return new PresentationData(title, indexedSlides);
-        } catch (IOException | SAXException | ParserConfigurationException e) {
+        } catch (SAXException | ParserConfigurationException e) {
             System.err.println(e.getMessage());
         }
         return null;

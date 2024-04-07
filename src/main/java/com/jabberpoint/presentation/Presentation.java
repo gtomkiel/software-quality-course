@@ -49,6 +49,10 @@ public class Presentation implements Publisher<IndexedSlide> {
         this.accessor = accessor;
         PresentationData data = accessor.loadFile(filename);
 
+        if (data == null) {
+            return;
+        }
+
         this.slideList = data.getSlides();
         this.slideViewerComponent.loadSlides(this.getSize(), data.getTitle());
         this.setSlideNumber(0);

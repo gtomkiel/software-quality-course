@@ -26,7 +26,7 @@ public class XMLAccessor implements Accessor {
         this.saver = new XMLSaver();
     }
 
-    public PresentationData loadFile(String filename) {
+    public PresentationData loadFile(String filename) throws IOException {
         return this.loader.loadFile(filename);
     }
 

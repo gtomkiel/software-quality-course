@@ -41,17 +41,18 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
 
-      - name: Download and unzip PMD
-        run: curl -OL https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.0.0/pmd-dist-7.0.0-bin.zip
-
-      - name: Unzip PMD
-        run: unzip pmd-dist-7.0.0-bin.zip
-
-      - name: Alias PMD
-        run: alias pmd="$HOME/pmd-bin-7.0.0/bin/pmd"
-
       - name: Run PMD
-        run: pmd check -d src/main/java -R rulesets/java/quickstart.xml -f html > pmd_report.html
+        id: pmd
+        uses: pmd/pmd-github-action@967a81f8b657c87f7c3e96b62301cb1a48efef29
+        with:
+          rulesets: 'rulesets/java/quickstart.xml'
+          sourcePath: 'src/main/java'
+          analyzeModifiedFilesOnly: false
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: pmd-report.sarif
 
       - name: Generate Jacoco report
         run: mvn jacoco:report
@@ -61,9 +62,3 @@ jobs:
         with:
           name: jacoco-report
           path: target/site/jacoco/index.html
-
-      - name: Upload PMD Report
-        uses: actions/upload-artifact@v2
-        with:
-          name: pmd-report
-          path: pmd_report.html

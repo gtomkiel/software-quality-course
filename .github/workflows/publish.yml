@@ -42,9 +42,8 @@ jobs:
 
       - name: Get current version
         run: |
-          VERSION="${{ github.run_number }}"
-          echo "0.0.$VERSION" >> $GITHUB_ENV
-
+          V="${{ github.run_number }}"
+          echo "VERSION=0.0.$V" >> $GITHUB_ENV
       - name: Release
         uses: softprops/action-gh-release@v2
         with:

@@ -2,6 +2,7 @@ package com.jabberpoint.slideitem;
 
 import org.junit.jupiter.api.Test;
 
+import static com.jabberpoint.TestUtils.getTestImagePath;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,20 +11,22 @@ class SlideItemFactoryTest {
 
     @Test
     void testCreateBitmapItem() {
-        SlideItem item = SlideItemFactory.createSlideItem(1, "test.png", SlideItemType.IMAGE);
+        String image = getTestImagePath();
+        SlideItem item = SlideItemFactory.createSlideItem(1, image, SlideItemType.IMAGE);
 
         assertThat(item).isInstanceOf(BitmapItem.class);
         assertEquals(1, item.getLevel());
-        assertEquals("test.png", item.getText());
+        assertEquals(image, item.getText());
     }
 
     @Test
     void testCreateTextItem() {
-        SlideItem item = SlideItemFactory.createSlideItem(1, "test", SlideItemType.TEXT);
+        String image = getTestImagePath();
+        SlideItem item = SlideItemFactory.createSlideItem(1, image, SlideItemType.TEXT);
 
         assertThat(item).isInstanceOf(TextItem.class);
         assertEquals(1, item.getLevel());
-        assertEquals("test", item.getText());
+        assertEquals(image, item.getText());
     }
 
     @Test
@@ -48,7 +51,8 @@ class SlideItemFactoryTest {
 
     @Test
     void testImageSlideItemType() {
-        SlideItem item = SlideItemFactory.createSlideItem(1, "test.png", SlideItemType.IMAGE);
+        String image = getTestImagePath();
+        SlideItem item = SlideItemFactory.createSlideItem(1, image, SlideItemType.IMAGE);
         assertThat(item).isInstanceOf(BitmapItem.class);
     }
 }

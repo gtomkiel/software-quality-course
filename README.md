@@ -1,1 +1,1 @@
-# sotfware-quality-course
+# software-quality-course

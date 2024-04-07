@@ -42,8 +42,7 @@ jobs:
 
       - name: Get current version
         run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          VERSION="$VERSION.${{ github.run_number }}"
+          VERSION="${{ github.run_number }}"
           echo "0.0.VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Release

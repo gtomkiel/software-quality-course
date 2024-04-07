@@ -1,5 +1,6 @@
 package com.jabberpoint.slide;
 
+import com.jabberpoint.style.ColorType;
 import com.jabberpoint.style.StyleManager;
 
 import javax.swing.*;
@@ -44,7 +45,7 @@ public class SlideViewerComponent extends JComponent implements Subscriber<Index
 
     @Override
     public void paintComponent(Graphics graphics) {
-        initGraphics(graphics, Color.white, Color.black, StyleManager.getLabelFont());
+        initGraphics(graphics);
 
         if (this.slide != null && this.slide.index() >= 0) {
             int y = drawSlideNumber((Graphics2D) graphics, 20);
@@ -52,11 +53,11 @@ public class SlideViewerComponent extends JComponent implements Subscriber<Index
         }
     }
 
-    private void initGraphics(Graphics graphics, Color background, Color foreground, Font labelFont) {
-        graphics.setColor(background);
+    private void initGraphics(Graphics graphics) {
+        graphics.setColor(StyleManager.getColor(ColorType.BACKGROUND));
         graphics.fillRect(0, 0, getWidth(), getHeight());
-        graphics.setFont(labelFont);
-        graphics.setColor(foreground);
+        graphics.setFont(StyleManager.getLabelFont());
+        graphics.setColor(StyleManager.getColor(ColorType.FOREGROUND));
     }
 
     private int drawSlideNumber(Graphics2D graphics, int y_offset) {

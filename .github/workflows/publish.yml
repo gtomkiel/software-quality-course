@@ -5,15 +5,15 @@ on:
     branches: [ "production" ]
     types:
       - closed
-  workflow_dispatch:
 
 jobs:
-  merge:
+  Merged:
 
     strategy:
       matrix:
-        java-version: [22]
-      
+        java-version: [ 22 ]
+
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -41,7 +41,10 @@ jobs:
         run: mvn package
 
       - name: Get current version
-        run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          VERSION="$VERSION.${{ github.run_number }}"
+          echo "0.0.VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Release
         uses: softprops/action-gh-release@v2

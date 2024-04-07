@@ -4,13 +4,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class SlideItemFactoryTest {
 
     @Test
     void testCreateBitmapItem() {
         SlideItem item = SlideItemFactory.createSlideItem(1, "test.png", SlideItemType.IMAGE);
 
-        assertInstanceOf(BitmapItem.class, item);
+        assertThat(item).isInstanceOf(BitmapItem.class);
         assertEquals(1, item.getLevel());
         assertEquals("test.png", item.getText());
     }
@@ -19,7 +21,7 @@ class SlideItemFactoryTest {
     void testCreateTextItem() {
         SlideItem item = SlideItemFactory.createSlideItem(1, "test", SlideItemType.TEXT);
 
-        assertInstanceOf(TextItem.class, item);
+        assertThat(item).isInstanceOf(TextItem.class);
         assertEquals(1, item.getLevel());
         assertEquals("test", item.getText());
     }
@@ -41,12 +43,12 @@ class SlideItemFactoryTest {
     @Test
     void testTextSlideItemType() {
         SlideItem item = SlideItemFactory.createSlideItem(1, "test", SlideItemType.TEXT);
-        assertInstanceOf(TextItem.class, item);
+        assertThat(item).isInstanceOf(TextItem.class);
     }
 
     @Test
     void testImageSlideItemType() {
         SlideItem item = SlideItemFactory.createSlideItem(1, "test.png", SlideItemType.IMAGE);
-        assertInstanceOf(BitmapItem.class, item);
+        assertThat(item).isInstanceOf(BitmapItem.class);
     }
 }

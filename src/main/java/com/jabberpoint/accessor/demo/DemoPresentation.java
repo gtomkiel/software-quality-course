@@ -1,5 +1,6 @@
-package com.jabberpoint.accessor;
+package com.jabberpoint.accessor.demo;
 
+import com.jabberpoint.accessor.Accessor;
 import com.jabberpoint.presentation.PresentationData;
 import com.jabberpoint.slide.IndexedSlide;
 import com.jabberpoint.slide.Slide;

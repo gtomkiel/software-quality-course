@@ -2,7 +2,7 @@ package com.jabberpoint;
 
 import com.jabberpoint.accessor.Accessor;
 import com.jabberpoint.accessor.AccessorFactory;
-import com.jabberpoint.accessor.XMLAccessorType;
+import com.jabberpoint.accessor.AccessorType;
 import com.jabberpoint.presentation.Presentation;
 import com.jabberpoint.slide.SlideViewerFrame;
 
@@ -35,7 +35,7 @@ public class JabberPoint {
 
         try {
             Accessor accessor = AccessorFactory.createAccessor(
-                    argv.length == 0 ? XMLAccessorType.DEMO : XMLAccessorType.XML);
+                    argv.length == 0 ? AccessorType.DEMO : AccessorType.XML);
             presentation.load(accessor, argv.length == 0 ? "" : argv[0]);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, Constants.Error.IO_ERR + ex, Constants.Error.JABBER,

@@ -1,5 +1,5 @@
 package com.jabberpoint.accessor;
 
-public enum XMLAccessorType {
+public enum AccessorType {
     XML, DEMO
 }

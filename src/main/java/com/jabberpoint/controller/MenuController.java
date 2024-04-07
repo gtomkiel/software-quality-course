@@ -3,7 +3,7 @@ package com.jabberpoint.controller;
 import com.jabberpoint.presentation.Presentation;
 import com.jabberpoint.accessor.Accessor;
 import com.jabberpoint.accessor.AccessorFactory;
-import com.jabberpoint.accessor.XMLAccessorType;
+import com.jabberpoint.accessor.AccessorType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,7 +75,7 @@ public class MenuController extends MenuBar {
 
     private void openFile(ActionEvent e) {
         try {
-            Accessor accessor = AccessorFactory.createAccessor(XMLAccessorType.XML);
+            Accessor accessor = AccessorFactory.createAccessor(AccessorType.XML);
             presentation.load(accessor, TEST_FILE);
         } catch (IOException exc) {
             JOptionPane.showMessageDialog(parent, IO_EX + exc, LOAD_ERR, JOptionPane.ERROR_MESSAGE);

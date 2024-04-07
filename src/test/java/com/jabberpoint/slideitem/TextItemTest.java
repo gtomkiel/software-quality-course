@@ -6,8 +6,13 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 
+import static com.jabberpoint.TestUtils.getPrivateMethod;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TextItemTest {
@@ -40,7 +45,7 @@ public class TextItemTest {
     }
 
     @Test
-    public void testGetBoundingBox() {
+    public void testGetBoundingBox() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Assumptions.assumeTrue(!GraphicsEnvironment.isHeadless());
         
         BufferedImage image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
@@ -49,10 +54,23 @@ public class TextItemTest {
         float scale = 1.0f;
 
         TextItem item = new TextItem(1, "Hello, World!");
-        assertEquals(20, item.getBoundingBox(graphics, null, scale, style).x);
-        assertEquals(0, item.getBoundingBox(graphics, null, scale, style).y);
-        assertEquals(249, item.getBoundingBox(graphics, null, scale, style).width);
-        assertEquals(57, item.getBoundingBox(graphics, null, scale, style).height);
+        Method getLayouts = getPrivateMethod(item, "getLayouts", Graphics2D.class, Style.class, float.class);
+
+        ArrayList<TextLayout> layouts = (ArrayList<TextLayout>) getLayouts.invoke(item, graphics, style, scale);
+        TextLayout layout = layouts.getFirst();
+
+        float leading = layout.getLeading();
+        float indent = layout.getDescent();
+
+        int x = 20;
+        int y = 0;
+        int width = (int) layout.getBounds().getWidth();
+        double height = style.getLeading() + layout.getBounds().getHeight() + leading + (indent);
+
+        assertEquals(x, item.getBoundingBox(graphics, null, scale, style).x);
+        assertEquals(y, item.getBoundingBox(graphics, null, scale, style).y);
+        assertEquals(width, item.getBoundingBox(graphics, null, scale, style).width);
+        assertEquals((int) height, item.getBoundingBox(graphics, null, scale, style).height);
     }
 
     @Test

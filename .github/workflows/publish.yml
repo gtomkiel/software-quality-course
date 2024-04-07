@@ -5,15 +5,15 @@ on:
     branches: [ "production" ]
     types:
       - closed
+  workflow_dispatch:
 
 jobs:
-  Merged:
+  merge:
 
     strategy:
       matrix:
-        java-version: [ 22 ]
-
-    if: github.event.pull_request.merged == true
+        java-version: [22]
+      
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

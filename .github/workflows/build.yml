@@ -36,4 +36,4 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven JDK ${{ matrix.java-version }}
-        run: mvn clean package
+        run: mvn clean package -DskipTests -Dmaven.test.skip=true

@@ -2,6 +2,7 @@ package com.jabberpoint.slideitem;
 
 import com.jabberpoint.style.Style;
 import com.jabberpoint.style.StyleManager;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
@@ -40,6 +41,8 @@ public class TextItemTest {
 
     @Test
     public void testGetBoundingBox() {
+        Assumptions.assumeTrue(!GraphicsEnvironment.isHeadless());
+        
         BufferedImage image = new BufferedImage(800, 600, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
         Style style = StyleManager.getStyle(1);

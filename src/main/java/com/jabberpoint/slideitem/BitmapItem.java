@@ -47,6 +47,8 @@ public class BitmapItem implements SlideItem {
     @Override
     public void draw(int x, int y, float scale, Graphics2D graphics, Style style, ImageObserver observer) {
         Rectangle boundingBox = this.getBoundingBox(graphics, observer, scale, style);
+        boundingBox.height -= this.getScaledLeading(scale, style);
+
         graphics.drawImage(bufferedImage, x + boundingBox.x, y + boundingBox.y, boundingBox.width, boundingBox.height,
                 observer);
     }
@@ -58,7 +60,7 @@ public class BitmapItem implements SlideItem {
         int width = this.getScaledWidth(observer, scale);
         int height = this.getScaledHeight(observer, scale, style);
 
-        return new Rectangle(indent, leading, width, leading + height);
+        return new Rectangle(indent, leading, width, height);
     }
 
     @Override
